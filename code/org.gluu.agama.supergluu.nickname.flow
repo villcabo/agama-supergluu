@@ -1,0 +1,23 @@
+Flow org.gluu.agama.supergluu.nickname
+     Basepath ""
+     Inputs key userData
+Log "@debug --> Nickname passkey flow started! <--"
+
+inum = userData.inum
+name = userData.name
+
+nicknameForm = RRF "nickname.ftlh"
+Log "@debug Nickname form response %" nicknameForm
+
+fidoEnroller = Call org.gluu.agama.supergluu.enroll.FidoEnroller#new
+nickNamed = Call fidoEnroller nameIt inum nicknameForm.nickname key
+
+Log "@debug inum %, key %, nickname %" inum key nicknameForm.nickname
+
+When nickNamed is false
+    Log "@debug Failed to set a nickname for % device" name
+    res = { success: false, message: "Nickname passkey failed to save" }
+    Finish res
+
+res = { success: true, message: "Nickname passkey saved" }
+Finish res

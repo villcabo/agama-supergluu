@@ -1,0 +1,54 @@
+Flow org.gluu.agama.supergluu.main
+     Basepath ""
+     Configs conf
+Log "@debug --> Main flow started! <--"
+
+authService = Call io.jans.as.server.service.AuthenticationService#class
+cdiUtil = Call io.jans.service.cdi.util.CdiUtil#bean authService
+fidoValidator = Call org.gluu.agama.supergluu.authn.FidoValidator#new
+authResult = {}
+obj = { success: true, assertion: "{}", isAssertion: false, showError: false, errorTitle: "", errorMessage: "" }
+
+Repeat 50 times max
+    mainForm = RRF "main.ftlh" obj
+    Log "@debug Main form response %" mainForm
+
+    When mainForm.loginBtn is ""
+        authResult.success = Call cdiUtil authenticate mainForm.username mainForm.password
+        authResult.uid = mainForm.username
+        Log "@debug Call authResult response %" authResult
+        When authResult.success is true
+            userData = Call org.gluu.agama.supergluu.IdentityProcessor#accountFromUid authResult.uid
+            Log "@debug Call accountFromUid response %" userData
+            uid = userData.uid
+            listTrigger = Trigger org.gluu.agama.supergluu.list userData conf
+            Log "@debug List trigger response %" listTrigger
+            When listTrigger.success is true
+                Finish uid
+
+    When mainForm.loginWithPasskeyBtn is ""
+        desAssertion = Call fidoValidator assertionRequest null
+        obj.showError = false
+        obj.isAssertion = true
+        obj.assertion = desAssertion
+
+    When mainForm.tokenResponse is not ""
+        verifyResponse | E = Call fidoValidator verify mainForm.tokenResponse
+        When E is not null
+            Log "@error FidoValidator.verify is crashed: %" E
+            obj.isAssertion = false
+            obj.showError = true
+            obj.errorTitle = "Passkey authentication failed."
+            obj.errorMessage = E.message
+        Otherwise
+            Log "@debug FidoValidator.verify is success %" verifyResponse
+            Finish verifyResponse
+
+    When mainForm.skipped is "skipped"
+        obj.isAssertion = false
+        obj.showError = true
+        obj.errorTitle = "Passkey authentication failed."
+        obj.errorMessage = mainForm.errorMessage
+
+res = { success: false, error: "Login attempt exceeded." }
+Finish res
