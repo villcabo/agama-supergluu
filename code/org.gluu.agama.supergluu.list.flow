@@ -45,7 +45,6 @@ Repeat 50 times max
         obj.showError = false
 
     When listForm.deviceId is not null and listForm.deviceId is not ""
-        Log "@debug Ingreso por deviceId %" listForm.deviceId
         obj.canEdit = false
         obj.isAssertion = false
         obj.showError = false

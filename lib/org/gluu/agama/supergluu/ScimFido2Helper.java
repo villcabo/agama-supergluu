@@ -61,7 +61,7 @@ public class ScimFido2Helper extends ScimWSBase {
 
     public String updateDevice(String userId, String deviceId, String displayName) throws Exception {
         try {
-            deviceId = parseInum(deviceId);
+//            deviceId = parseInum(deviceId);
             log.debug("Parsed deviceId: {}", deviceId);
             URL url = new URL(apiBase + "/v2/Fido2Devices/" + encode(deviceId));
             HTTPRequest request = new HTTPRequest(HTTPRequest.Method.PUT, url);
@@ -80,18 +80,18 @@ public class ScimFido2Helper extends ScimWSBase {
         }
     }
 
-    private String parseInum(String input) {
-        if (input == null) return "";
-        input = input.trim();
-        if (input.isEmpty()) return "";
-        String[] split = input.split(",");
-        if (split.length == 0) {
-            return "";
-        }
-        String[] split1 = split[0].split("=");
-        if (split1.length == 0) {
-            return "";
-        }
-        return split1[1];
-    }
+//    private String parseInum(String input) {
+//        if (input == null) return "";
+//        input = input.trim();
+//        if (input.isEmpty()) return "";
+//        String[] split = input.split(",");
+//        if (split.length == 0) {
+//            return "";
+//        }
+//        String[] split1 = split[0].split("=");
+//        if (split1.length == 0) {
+//            return "";
+//        }
+//        return split1[1];
+//    }
 }
