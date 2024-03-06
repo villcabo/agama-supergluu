@@ -94,7 +94,7 @@ public class ScimWSBase {
     }
 
     private void refreshToken() throws IOException {
-        if (System.currentTimeMillis() < tokenExp - TOKEN_EXP_GAP) return;
+//        if (System.currentTimeMillis() < tokenExp - TOKEN_EXP_GAP) return;
 
         StringJoiner joiner = new StringJoiner("&");
         Map.of("grant_type", "client_credentials", "scope", scope)
@@ -111,6 +111,8 @@ public class ScimWSBase {
             long exp = Long.parseLong(jobj.get("expires_in").toString()) * 1000;
             tokenExp = System.currentTimeMillis() + exp;
             token = jobj.get("access_token").toString();
+            log.debug("TOKEN OBTENIDO: {}", token);
+
         } catch (Exception e) {
             throw new IOException(e.getMessage(), e);
         }

@@ -1,23 +1,29 @@
 Flow org.gluu.agama.supergluu.nickname
      Basepath ""
-     Inputs key userData
-Log "@debug --> Nickname passkey flow started! <--"
+     Inputs deviceId userData scimSetting
+Log "@debug --> Nickname flow is started: deviceId: %" deviceId
 
 inum = userData.inum
+Log "@debug --> Nickname flow is started: inum: %" inum
 name = userData.name
 
 nicknameForm = RRF "nickname.ftlh"
 Log "@debug Nickname form response %" nicknameForm
+nickname = nicknameForm.nickname
 
-fidoEnroller = Call org.gluu.agama.supergluu.enroll.FidoEnroller#new
-nickNamed = Call fidoEnroller nameIt inum nicknameForm.nickname key
+sgEnroller = Call org.gluu.agama.supergluu.SGValidator#new
+succ = Call sgEnroller attach inum deviceId nickname
+When succ is false
+    obj = { success: false, error: "Enrolled device couldn't be attached to user profile" }
+    Finish obj
 
-Log "@debug inum %, key %, nickname %" inum key nicknameForm.nickname
+//scimHelper = Call org.gluu.agama.supergluu.ScimFido2Helper#new scimSetting
+//nickNamed | E = Call scimHelper updateDevice inum deviceId nickname
 
-When nickNamed is false
-    Log "@debug Failed to set a nickname for % device" name
-    res = { success: false, message: "Nickname passkey failed to save" }
-    Finish res
+//When E is not null
+//    Log " @debug Failed to set a nickname for % device" deviceId
+//    res = { success: false, message: "Nickname passkey failed to save" }
+//    Finish res
 
 res = { success: true, message: "Nickname passkey saved" }
 Finish res

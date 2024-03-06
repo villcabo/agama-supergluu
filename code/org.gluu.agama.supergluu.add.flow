@@ -1,47 +1,81 @@
 Flow org.gluu.agama.supergluu.add
      Basepath ""
-     Inputs userData
+     Configs conf
+     Inputs userData scimSetting
 Log "@debug --> Add a passkey flow started! <--"
 
+obj = RRF "pre-enrollment.ftlh"
+When obj.cancelBtn is ""
+    res = { success: false, message: "Cancel event" }
+    Finish res
+
 inum = userData.inum
-name = userData.name
-fidoEnroller = Call org.gluu.agama.supergluu.enroll.FidoEnroller#new
-obj = { attestation: "{}", isAttestation: false, showError: false, errorTitle: "", errorMessage: "" }
+sgEnroller = Call org.gluu.agama.supergluu.SGValidator#new
+req = Call sgEnroller QRRequest null
+Log "@debug enrollment response: %" req
 
-Repeat 50 times max
-    addDeviceForm = RRF "passkey-add.ftlh" obj
-    Log "@debug Add form response %" addDeviceForm
+obj = { request: req, timeout: conf.timeout }
+data = RRF "enrollment.ftlh" obj
 
-    When addDeviceForm.addPasskeyBtn is ""
-        detestable = Call fidoEnroller getAttestationMessage inum
-        obj.isAttestation = true
-        obj.attestation = detestable
-        obj.showError = false
+data = Call sgEnroller validateEnrolledDevice
+Log "@debug validateEnrolledDevice response: %" data
 
-    When addDeviceForm.skipped is "skipped"
-        obj.isAttestation = false
-        obj.showError = true
-        obj.errorTitle = "Passkey registration failed."
-        obj.errorMessage = addDeviceForm.errorMessage
+dn = data.first
+When dn is null     //Enrollment had issues
+    obj = { success: false, error: data.second }
+    Finish obj
 
-    When addDeviceForm.tokenResponse is not ""
-        key | E = Call fidoEnroller verifyRegistration inum addDeviceForm.tokenResponse
-        When E is not null
-            Log "@error FidoEnroller.verifyRegistration is crashed: %" E
-            obj.isAttestation = false
-            obj.showError = true
-            obj.errorTitle = "Passkey registration failed."
-            obj.errorMessage = E.message
-        Otherwise
-            Log "@debug FidoEnroller.verifyRegistration is success, key %" key
-            nicknameTrigger = Trigger org.gluu.agama.supergluu.nickname key userData
-            Log "@debug Nickname trigger response %" nicknameTrigger
-            obj.isAttestation = false
-            Finish nicknameTrigger
+Log "User % has successfully enrolled a super gluu device. Attaching to profile..." inum
 
-    When addDeviceForm.cancelBtn is ""
-        res = { success: false, message: "Cancel event" }
-        Finish res
+//succ = Call sgEnroller attach inum dn
+//When succ is false
+//    obj = { success: false, error: "Enrolled device couldn't be attached to user profile" }
+//    Finish obj
 
-res = { success: false, error: "Passkey registration attempt exceeded." }
-Finish res
+nicknameTrigger = Trigger org.gluu.agama.supergluu.nickname dn userData scimSetting
+Finish nicknameTrigger
+
+//inum = userData.inum
+//name = userData.name
+//fidoEnroller = Call org.gluu.agama.supergluu.enroll.FidoEnroller#new
+//obj = { attestation: "{}", isAttestation: false, showError: false, errorTitle: "", errorMessage: "" }
+//
+//Repeat 50 times max
+//    addDeviceForm = RRF "passkey-add.ftlh" obj
+//    Log "@debug Add form response %" addDeviceForm
+//
+//    When addDeviceForm.addPasskeyBtn is ""
+//        enrollTrigger = Trigger org.gluu.agama.supergluu.enroll userData scimSetting
+
+//        detestable = Call fidoEnroller getAttestationMessage inum
+//        obj.isAttestation = true
+//        obj.attestation = detestable
+//        obj.showError = false
+
+//    When addDeviceForm.skipped is "skipped"
+//        obj.isAttestation = false
+//        obj.showError = true
+//        obj.errorTitle = "Passkey registration failed."
+//        obj.errorMessage = addDeviceForm.errorMessage
+//
+//    When addDeviceForm.tokenResponse is not ""
+//        key | E = Call fidoEnroller verifyRegistration inum addDeviceForm.tokenResponse
+//        When E is not null
+//            Log "@error FidoEnroller.verifyRegistration is crashed: %" E
+//            obj.isAttestation = false
+//            obj.showError = true
+//            obj.errorTitle = "Passkey registration failed."
+//            obj.errorMessage = E.message
+//        Otherwise
+//            Log "@debug FidoEnroller.verifyRegistration is success, key %" key
+//            nicknameTrigger = Trigger org.gluu.agama.supergluu.nickname key userData
+//            Log "@debug Nickname trigger response %" nicknameTrigger
+//            obj.isAttestation = false
+//            Finish nicknameTrigger
+
+//    When addDeviceForm.cancelBtn is ""
+//        res = { success: false, message: "Cancel event" }
+//        Finish res
+//
+//res = { success: false, error: "Passkey registration attempt exceeded." }
+//Finish res

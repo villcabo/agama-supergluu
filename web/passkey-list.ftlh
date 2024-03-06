@@ -26,7 +26,7 @@
                 const assertionJson = JSON.stringify(dataObject);
                 console.log('Assertion response: ' + assertionJson);
                 document.getElementById("tokenResponse").value = assertionJson;
-                document.fodrms[0].submit();
+                document.forms[0].submit();
             })
             .catch(err => {
                 console.error('Failed to webauthn get credential: ', err);
@@ -35,7 +35,7 @@
                 } else if (err.message) {
                     document.getElementById('errorMessage').value = err.message;
                 } else {
-                    docusddment.getElementById('errorMessage').value = 'Unknown message';
+                    document.getElementById('errorMessage').value = 'Unknown message';
                 }
                 document.getElementById("skipped").value = "skipped";
                 document.forms[0].submit();
@@ -66,37 +66,25 @@
             <form method="post" enctype="application/x-www-form-urlencoded"
                   class="p-6 space-y-4 md:space-y-6 sm:p-8 text-gray-900">
                 <#if fidoDevice.count == 0>
-                    <div class="flex items-center justify-center">
-                        <svg aria-hidden="true" height="24" viewBox="0 0 24 24" version="1.1" width="24"
-                             data-view-component="true" class="w-8 h-8">
-                            <path d="M9.496 2a5.25 5.25 0 0 0-2.519 9.857A9.006 9.006 0 0 0 .5 20.228a.751.751 0 0 0 .728.772h5.257c3.338.001 6.677.002 10.015 0a.5.5 0 0 0 .5-.5v-4.669a.95.95 0 0 0-.171-.551 9.02 9.02 0 0 0-4.814-3.423A5.25 5.25 0 0 0 9.496 2Z"></path>
-                            <path d="M23.625 10.313c0 1.31-.672 2.464-1.691 3.134a.398.398 0 0 0-.184.33v.886a.372.372 0 0 1-.11.265l-.534.534a.188.188 0 0 0 0 .265l.534.534c.071.07.11.166.11.265v.347a.374.374 0 0 1-.11.265l-.534.534a.188.188 0 0 0 0 .265l.534.534a.37.37 0 0 1 .11.265v.431a.379.379 0 0 1-.097.253l-1.2 1.319a.781.781 0 0 1-1.156 0l-1.2-1.319a.379.379 0 0 1-.097-.253v-5.39a.398.398 0 0 0-.184-.33 3.75 3.75 0 1 1 5.809-3.134ZM21 9.75a1.125 1.125 0 1 0-2.25 0 1.125 1.125 0 0 0 2.25 0Z"></path>
-                        </svg>
-                    </div>
 
                     <h1 class="text-xl text-center font-medium md:text-2xl dark:text-white">
-                        Passwordless sign-in with passkeys
+                        Super Gluu devices empty list
                     </h1>
 
                     <p class="text-gray-600 leading-tight">
-                        Passkeys are a password replacement that validates your identity using touch, facial
-                        recognition, a device password, or a PIN.
-                    </p>
-                    <p class="text-gray-600 leading-tight">
-                        Passkeys can be used for sign-in as a simple and
-                        secure alternative to your password and two-factor credentials.
+                        We have detected that you have not yet configured any Super Gluu device.
                     </p>
 
                     <div class="text-center">
                         <button type="submit"
                                 name="addAPasskeyBtn"
                                 class="bg-gray-50 border border-gray-300 hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                            Add a passkey
+                            Add a Super Gluu
                         </button>
                     </div>
                 <#else>
                     <h1 class="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                        Your Passkeys
+                        Your Super Gluu Devices
                     </h1>
 
                     <div>
@@ -159,7 +147,7 @@
                         <button type="submit"
                                 name="addAPasskeyBtn"
                                 class="bg-gray-50 border border-gray-300 hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                            Add a passkey
+                            Add a new Super Gluu Device
                         </button>
                     </div>
 
@@ -212,7 +200,7 @@
                     <div class="text-center">
                         <button type="submit" name="loginWithPasskeyBtn" formnovalidate
                                 class="bg-gray-50 border border-gray-300 hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                            Sign in with a passkey
+                            Sign in with Super Gluu
                         </button>
                     </div>
                 </#if>

@@ -15,7 +15,7 @@ Repeat 50 times max
     Log "@debug List passkey form response %" listForm
 
     When listForm.addAPasskeyBtn is ""
-        addTrigger = Trigger org.gluu.agama.supergluu.add userData
+        addTrigger = Trigger org.gluu.agama.supergluu.add userData scimSetting
         Log "@debug Add passkey trigger response %" addTrigger
         obj.showError = false
         obj.isAssertion = false
@@ -44,7 +44,8 @@ Repeat 50 times max
         obj.isAssertion = false
         obj.showError = false
 
-    When listForm.deviceId is not ""
+    When listForm.deviceId is not null and listForm.deviceId is not ""
+        Log "@debug Ingreso por deviceId %" listForm.deviceId
         obj.canEdit = false
         obj.isAssertion = false
         obj.showError = false

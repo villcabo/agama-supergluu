@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-    <title>Agama passkey</title>
+    <title>Agama SuperGluu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="${webCtx.contextPath}/servlet/favicon" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -31,21 +31,21 @@
                 </div>
 
                 <h1 class="text-xl text-center font-medium text-gray-900 md:text-2xl dark:text-white">
-                    Successfully added a passkey
+                    Successfully added a SuperGluu
                 </h1>
 
                 <p class="text-gray-600 leading-tight">
-                    From now on, you can use this passkey to sign-in.
+                    From now on, you can use this device supergluu to sign-in.
                 </p>
 
                 <div class="w-full border-t border-gray-300"></div>
 
                 <div class="space-y-2">
                     <label class="text-gray-800" for="nickname">
-                        Passkey nickname
+                        SuperGluu nickname
                     </label>
                     <p class="text-gray-600 leading-tight">
-                        This is a hardware passkey - you may want to nickname it by its manufacturer or device model.
+                        You may want to nickname it by its manufacturer or device model.
                     </p>
                 </div>
 
