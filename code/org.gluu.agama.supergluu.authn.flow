@@ -1,0 +1,39 @@
+Flow org.gluu.agama.supergluu.authn
+     Basepath ""
+     Configs conf
+     Inputs userData scimSetting
+Log "@debug --> Authenticator flow started"
+
+inum = userData.inum
+sgValidator = Call org.gluu.agama.supergluu.SGValidator#new
+qrRequest = Call sgValidator QRRequest "authenticate"
+
+Log "@debug Sending mobile notification to user's registered Super Gluu devices"
+realCrap = Call org.gluu.agama.supergluu.notify.SGNotificationsUtil#getInstance
+
+| E = Call realCrap send inum sgValidator.appId qrRequest
+When E is not null
+    Log "@e " E
+    E = null
+
+realCrap = null
+timeout = conf.timeout
+
+obj = { timeout: timeout }
+data = RRF "authn-notification.ftlh" obj
+Log "@debug Render authn-notification response %" data
+
+When data.continue is ""
+    //Show page for QR code scanning
+    obj = { request: qrRequest, timeout: timeout }
+    data = RRF "enrollment.ftlh" obj
+    Log "@debug Render enrollment response %" data
+
+error = Call sgValidator validateDevice inum
+Log "@debug validate device result %" error
+
+When error is not null
+    obj = { success: false, error: error }
+    Finish obj
+
+Finish true

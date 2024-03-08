@@ -101,10 +101,14 @@ public class SGValidator {
     public String validateDevice(String inum) {
         String msg = null;
         Map<String, String> sessAttrs = getSessionId().getSessionAttributes();
+        logger.debug("*** -> sessAttrs: {}", sessAttrs);
 
         String sessionCustomState = sessAttrs.get("session_custom_state");
         String superGluuU2fDeviceUserInum = sessAttrs.get("super_gluu_u2f_device_user_inum");
-        String deviceId = sessAttrs.get("super_gluu_u2f_device_id");
+            String deviceId = sessAttrs.get("super_gluu_u2f_device_id");
+
+        logger.debug("*** -> sessionCustomState: {}", sessionCustomState);
+        logger.debug("*** -> superGluuU2fDeviceUserInum: {}", superGluuU2fDeviceUserInum);
 
         if ("approved".equals(sessionCustomState) && inum.equals(superGluuU2fDeviceUserInum)) {
 

@@ -16,17 +16,23 @@ Repeat 50 times max
 
     When listForm.addAPasskeyBtn is ""
         addTrigger = Trigger org.gluu.agama.supergluu.add userData scimSetting
-        Log "@debug Add passkey trigger response %" addTrigger
+        Log "@debug Enrollment trigger response %" addTrigger
         obj.showError = false
         obj.isAssertion = false
         When addTrigger.success is true
             obj.fidoDevice = Call scimFido2Helper getFidoDeviceByUser inum
 
     When listForm.loginWithPasskeyBtn is ""
-        desAssertion = Call fidoValidator assertionRequest uid
         obj.showError = false
-        obj.isAssertion = true
-        obj.assertion = desAssertion
+        obj.isAssertion = false
+        authnTrigger = Trigger org.gluu.agama.supergluu.authn userData scimSetting
+        Log "@debug Authenticator trigger response %" authnTrigger
+        When authnTrigger.success is false
+            obj.showError = true
+            obj.errorMessage = authnTrigger.message
+        Otherwise
+            res = { success: true, message: "SuperGluu Authenticator success" }
+            Finish res
 
     When listForm.skipped is "skipped"
         obj.isAssertion = false
