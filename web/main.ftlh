@@ -1,13 +1,10 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-    <title>Agama passkey</title>
+    <title>Agama SuperGluu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="${webCtx.contextPath}/servlet/favicon" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="${webCtx.contextPath}/auth/fido2/js/base64js.js"></script>
-    <script src="${webCtx.contextPath}/auth/fido2/js/base64url.js"></script>
-    <script src="${webCtx.contextPath}/auth/fido2/js/webauthn.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class'
@@ -15,39 +12,6 @@
     </script>
 </head>
 <body>
-<script>
-    function authenticationWithPasskey() {
-        const request = ${assertion?no_esc}
-        console.log('Assertion request: ' + JSON.stringify(request));
-        webauthn.getAssertion(request)
-            .then(data => {
-                const dataObject = webauthn.responseToObject(data);
-                const assertionJson = JSON.stringify(dataObject);
-                console.log('Assertion response: ' + assertionJson);
-                document.getElementById("tokenResponse").value = assertionJson;
-                document.forms[0].submit();
-            })
-            .catch(err => {
-                console.error('Failed to webauthn get credential: ', err);
-                if (err.name === "NotAllowedError") {
-                    document.getElementById('errorMessage').value = 'The operation either timed out or was not allowed.';
-                } else if (err.message) {
-                    document.getElementById('errorMessage').value = err.message;
-                } else {
-                    document.getElementById('errorMessage').value = 'Unknown message';
-                }
-                document.getElementById("skipped").value = "skipped";
-                document.forms[0].submit();
-            });
-    }
-
-    window.addEventListener("load", (event) => {
-        const isAssertion = ${isAssertion?c};
-        if (isAssertion) {
-            authenticationWithPasskey();
-        }
-    });
-</script>
 <section class="bg-gray-100 dark:bg-gray-900">
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <div class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
@@ -59,7 +23,7 @@
             <form id="loginForm" method="post" enctype="application/x-www-form-urlencoded"
                   class="p-6 space-y-4 md:space-y-6 sm:p-8">
                 <h1 class="text-xl text-center font-medium text-gray-900 md:text-2xl dark:text-white">
-                    Agama Passkey
+                    Agama SuperGluu
                 </h1>
 
                 <div class="space-y-3">
@@ -86,21 +50,6 @@
                         class="w-full text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                     Sign in
                 </button>
-
-                <div class="relative">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-300"></div>
-                    </div>
-                    <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-white text-gray-900">
-                            Or
-                        </span>
-                    </div>
-                </div>
-
-                <input type="hidden" id="tokenResponse" name="tokenResponse">
-                <input type="hidden" id="skipped" name="skipped">
-                <input type="hidden" id="errorMessage" name="errorMessage">
 
                 <#if showError == true>
                     <div id="alert-message"
@@ -131,11 +80,6 @@
                         </div>
                     </div>
                 </#if>
-
-                <button type="submit" name="loginWithPasskeyBtn" formnovalidate
-                        class="w-full text-black bg-gray-50 border border-gray-300 hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    Sign in with a passkey
-                </button>
             </form>
         </div>
     </div>

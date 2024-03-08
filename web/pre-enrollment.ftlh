@@ -27,7 +27,7 @@
                 </div>
 
                 <h1 class="text-xl text-center font-medium text-gray-900 md:text-2xl dark:text-white">
-                    Add a Super Gluu Device
+                    Add a new Super Gluu Device
                 </h1>
 
                 <p class="text-gray-900 font-medium leading-tight">
