@@ -14,7 +14,8 @@
     },
     "org.gluu.agama.supergluu.main": {
       "scimClientId": "8e97bab4-f691-4056-8055-8abad7c7ee65",
-      "scimClientSecret": "8b8b32d0-0cf3-45aa-88f6-973ffbcb4a99"
+      "scimClientSecret": "8b8b32d0-0cf3-45aa-88f6-973ffbcb4a99",
+      "maxLoginAttempt": 3
     }
   },
   "org.gluu.agama.supergluu.main": {

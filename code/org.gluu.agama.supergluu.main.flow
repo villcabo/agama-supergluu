@@ -6,15 +6,14 @@ Log "@debug --> Main flow started"
 authService = Call io.jans.as.server.service.AuthenticationService#class
 cdiUtil = Call io.jans.service.cdi.util.CdiUtil#bean authService
 authResult = {}
-obj = { success: true, assertion: "{}", isAssertion: false, showError: false, errorTitle: "", errorMessage: "" }
+obj = { success: true, showError: false, errorTitle: "", errorMessage: "" }
 
-Repeat 3 times max
+Repeat conf.maxLoginAttempt times max
     mainForm = RRF "main.ftlh" obj
     Log "@debug Main form result %" mainForm
 
     authResult.success = Call cdiUtil authenticate mainForm.username mainForm.password
     authResult.uid = mainForm.username
-    Log "@debug authenticate called: %" authResult
     When authResult.success is true
         userData = Call org.gluu.agama.supergluu.IdentityProcessor#accountFromUid authResult.uid
         Log "@debug Call accountFromUid response %" userData
@@ -23,6 +22,10 @@ Repeat 3 times max
         Log "@debug List flow completed: %" listFlow
         When listFlow.success is true
             Finish uid
+    Otherwise
+        obj.showError = true
+        obj.errorTitle = "Invalid credentials"
+        obj.errorMessage = "Wrong user name or password"
 
 res = { success: false, error: "Login attempt exceeded." }
 Finish res

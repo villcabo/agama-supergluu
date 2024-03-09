@@ -5,55 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="${webCtx.contextPath}/servlet/favicon" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class'
-        }
-    </script>
 </head>
 <body>
-<section class="bg-gray-100 dark:bg-gray-900">
+<section class="bg-gray-100">
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <div class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+        <div class="flex items-center mb-6 text-2xl font-semibold text-gray-900">
             <img class="w-40 mr-2"
                  src="https://gluu.org/wp-content/uploads/2021/02/janssen-project-transparent-630px-182px-300x86.png"
                  alt="logo">
         </div>
-        <div class="w-full bg-white rounded-lg shadow-lg dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div class="w-full bg-white rounded-lg shadow-lg md:mt-0 sm:max-w-md xl:p-0">
             <form id="loginForm" method="post" enctype="application/x-www-form-urlencoded"
                   class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                <h1 class="text-xl text-center font-medium text-gray-900 md:text-2xl dark:text-white">
+                <h1 class="text-xl text-center font-medium text-gray-900 md:text-2xl">
                     Agama SuperGluu
                 </h1>
 
-                <div class="space-y-3">
-                    <div>
-                        <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                            Username
-                        </label>
-                        <input type="text" name="username" id="username"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               placeholder="" required="" autocomplete="off">
-                    </div>
-                    <div>
-                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                            Password
-                        </label>
-                        <input type="password" name="password" id="password" placeholder=""
-                               class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               required="">
-                    </div>
-                </div>
-
-                <button type="submit"
-                        name="loginBtn"
-                        class="w-full text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    Sign in
-                </button>
-
                 <#if showError == true>
                     <div id="alert-message"
-                         class="p-4 mb-4 text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+                         class="p-4 mb-4 text-red-800 border border-red-300 rounded-lg bg-red-50"
                          role="alert">
                         <div class="flex items-center">
                             <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16"
@@ -63,8 +33,8 @@
                             <span class="sr-only">Info</span>
                             <h3 class="text-lg font-medium">${errorTitle}</h3>
                             <button type="button"
-                                    onclick="document.getElementById('alert-message').style.display = 'none'"
-                                    class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+                                    onclick="document.getElementById('alert-message').style.display = 'none'"2
+                                    class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8"
                                     data-dismiss-target="#alert-border-2" aria-label="Close">
                                 <span class="sr-only">Dismiss</span>
                                 <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -80,6 +50,31 @@
                         </div>
                     </div>
                 </#if>
+
+                <div class="space-y-3">
+                    <div>
+                        <label for="username" class="block mb-2 text-sm font-medium text-gray-900">
+                            Username
+                        </label>
+                        <input type="text" name="username" id="username"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                               placeholder="" required="" autocomplete="off">
+                    </div>
+                    <div>
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900">
+                            Password
+                        </label>
+                        <input type="password" name="password" id="password" placeholder=""
+                               class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                               required="">
+                    </div>
+                </div>
+
+                <button type="submit"
+                        name="loginBtn"
+                        class="w-full text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Sign in
+                </button>
             </form>
         </div>
     </div>
