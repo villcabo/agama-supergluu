@@ -35,7 +35,6 @@ public class ScimFido2Helper extends ScimWSBase {
             request.setQuery(joiner.toString());
 
             String response = sendRequest(request, true, true).getContentAsJSONObject().toJSONString();
-            log.debug("Response scim fido2 devices: {}", response);
             JSONObject resObject = new JSONObject(response);
             int count = resObject.getInt("totalResults");
             List<Map<String, String>> mapList = new ArrayList<>();
@@ -61,37 +60,18 @@ public class ScimFido2Helper extends ScimWSBase {
 
     public String updateDevice(String userId, String deviceId, String displayName) throws Exception {
         try {
-//            deviceId = parseInum(deviceId);
-            log.debug("Parsed deviceId: {}", deviceId);
             URL url = new URL(apiBase + "/v2/Fido2Devices/" + encode(deviceId));
             HTTPRequest request = new HTTPRequest(HTTPRequest.Method.PUT, url);
             request.setAccept(APPLICATION_JSON);
             request.setContentType(APPLICATION_JSON);
             String body = net.minidev.json.JSONObject.toJSONString(Map.of("userId", userId, "displayName", displayName));
-            log.debug("Request updateDevice body: {}", body);
+            log.debug("Request updateDevice url: {}, body: {}", url, body);
             request.setQuery(body);
 
-            String response = sendRequest(request, true, true).getContentAsJSONObject().toJSONString();
-            log.debug("Response update device: {}", response);
-            return "UPDATED";
+            return sendRequest(request, true, true).getContentAsJSONObject().toJSONString();
 
         } catch (Exception e) {
             throw new IOException("Could not update device: " + e.getMessage(), e);
         }
     }
-
-//    private String parseInum(String input) {
-//        if (input == null) return "";
-//        input = input.trim();
-//        if (input.isEmpty()) return "";
-//        String[] split = input.split(",");
-//        if (split.length == 0) {
-//            return "";
-//        }
-//        String[] split1 = split[0].split("=");
-//        if (split1.length == 0) {
-//            return "";
-//        }
-//        return split1[1];
-//    }
 }

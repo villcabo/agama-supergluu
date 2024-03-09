@@ -1,81 +1,56 @@
 Flow org.gluu.agama.supergluu.list
      Basepath ""
      Inputs userData scimSetting
-Log "@debug --> List passkey flow started! <--"
+Log "@debug --> List flow started"
 
 inum = userData.inum
-uid = userData.uid
-fidoValidator = Call org.gluu.agama.supergluu.authn.FidoValidator#new
 scimFido2Helper = Call org.gluu.agama.supergluu.ScimFido2Helper#new scimSetting
 fidoDevice = Call scimFido2Helper getFidoDeviceByUser inum
-obj = { fidoDevice: fidoDevice, assertion: "{}", isAssertion: false, showError: false, errorTitle: "", errorMessage: "", canEdit: false }
+obj = { fidoDevice: fidoDevice, showError: false, errorTitle: "", errorMessage: "", canEdit: false }
 
 Repeat 50 times max
-    listForm = RRF "passkey-list.ftlh" obj
-    Log "@debug List passkey form response %" listForm
+    listForm = RRF "list.ftlh" obj
+    Log "@debug List form response %" listForm
 
-    When listForm.addAPasskeyBtn is ""
-        addTrigger = Trigger org.gluu.agama.supergluu.add userData scimSetting
-        Log "@debug Enrollment trigger response %" addTrigger
+    When listForm.addBtn is ""
+        addFlow = Trigger org.gluu.agama.supergluu.add userData scimSetting
+        Log "@debug Enrollment flow %" addFlow
         obj.showError = false
-        obj.isAssertion = false
-        When addTrigger.success is true
+        When addFlow.success is true
             obj.fidoDevice = Call scimFido2Helper getFidoDeviceByUser inum
 
-    When listForm.loginWithPasskeyBtn is ""
+    When listForm.loginBtn is ""
         obj.showError = false
-        obj.isAssertion = false
-        authnTrigger = Trigger org.gluu.agama.supergluu.authn userData scimSetting
-        Log "@debug Authenticator trigger response %" authnTrigger
-        When authnTrigger.success is false
+        authFlow = Trigger org.gluu.agama.supergluu.authn userData scimSetting
+        Log "@debug Authenticator flow %" authFlow
+        When authFlow.success is false
             obj.showError = true
-            obj.errorMessage = authnTrigger.message
+            obj.errorMessage = authFlow.message
         Otherwise
-            res = { success: true, message: "SuperGluu Authenticator success" }
+            res = { success: true, message: "Authenticator is success" }
             Finish res
-
-    When listForm.skipped is "skipped"
-        obj.isAssertion = false
-        obj.showError = true
-        obj.errorTitle = "Passkey authentication failed."
-        obj.errorMessage = listForm.errorMessage
 
     When listForm.editItemBtn is ""
         obj.canEdit = true
-        obj.isAssertion = false
         obj.showError = false
 
     When listForm.cancelItemBtn is ""
         obj.canEdit = false
-        obj.isAssertion = false
         obj.showError = false
 
     When listForm.deviceId is not null and listForm.deviceId is not ""
         obj.canEdit = false
-        obj.isAssertion = false
         obj.showError = false
+        Log "@debug Attempting to update device -> inum: %, deviceId: %, nickName: %" inum listForm.deviceId listForm.nickname
         nickNamed | E = Call scimFido2Helper updateDevice inum listForm.deviceId listForm.nickname
         When E is not null
-            Log "@debug Failed to set a nickname for % device" uid
+            Log "@debug Failed to set a nickname for % device, Error %" userData.uid E
             obj.showError = true
-            obj.errorTitle = "Passkey failed to set a new nickname"
+            obj.errorTitle = "Failed to set a new nickname"
             obj.errorMessage = E.message
         Otherwise
             Log "@debug Device % updated %" listForm.deviceId nickNamed
             obj.fidoDevice = Call scimFido2Helper getFidoDeviceByUser inum
 
-    When listForm.tokenResponse is not ""
-        When listForm.tokenResponse is not null
-            verifyResponse | E = Call fidoValidator verify listForm.tokenResponse
-            When E is not null
-                Log "@debug FidoValidator.verify is crashed: %" E
-                obj.showError = true
-                obj.errorTitle = "Passkey authentication failed."
-                obj.errorMessage = E.message
-            Otherwise
-                Log "@debug FidoValidator.verify is success: %" verifyResponse
-                res = { success: true, message: "Passkey authentication success" }
-                Finish res
-
-res = { success: false, message: "Passkey list limited exceeded" }
+res = { success: false, message: "SuperGluu list limited exceeded" }
 Finish res

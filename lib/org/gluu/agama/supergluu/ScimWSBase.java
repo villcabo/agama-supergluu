@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Base64;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -67,11 +65,11 @@ public class ScimWSBase {
         if (withToken) {
             refreshToken();
             request.setAuthorization("Bearer " + token);
-            log.debug("--> Header Authorization: Bearer {}", token);
         }
 
         HTTPResponse r = request.send();
         if (checkOK) {
+            log.debug("=====> Parent Response -> status: {}, body: {}", r.getStatusCode(), r.getContent());
             r.ensureStatusCode(200);
         }
         return r;
@@ -94,7 +92,12 @@ public class ScimWSBase {
     }
 
     private void refreshToken() throws IOException {
-//        if (System.currentTimeMillis() < tokenExp - TOKEN_EXP_GAP) return;
+        long currentTime = System.currentTimeMillis();
+        long expiration = tokenExp - TOKEN_EXP_GAP;
+        if (currentTime < expiration) {
+            log.debug("No need to generate a new token: {}, currentTime: {}, expiration: {}", token, currentTime, expiration);
+            return;
+        }
 
         StringJoiner joiner = new StringJoiner("&");
         Map.of("grant_type", "client_credentials", "scope", scope)
@@ -107,11 +110,11 @@ public class ScimWSBase {
 
         try {
             Map<String, Object> jobj = request.send().getContentAsJSONObject();
-
-            long exp = Long.parseLong(jobj.get("expires_in").toString()) * 1000;
-            tokenExp = System.currentTimeMillis() + exp;
+            long exp = Long.parseLong(jobj.get("expires_in").toString());
+            long expX1000 = exp * 1000;
+            tokenExp = System.currentTimeMillis() + expX1000;
             token = jobj.get("access_token").toString();
-            log.debug("TOKEN OBTENIDO: {}", token);
+            log.info("New token generated: {}, exp: {}, expX1000: {}, expiration: {}", token, exp, expX1000, tokenExp);
 
         } catch (Exception e) {
             throw new IOException(e.getMessage(), e);
