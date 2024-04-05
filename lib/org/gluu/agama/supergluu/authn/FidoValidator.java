@@ -2,9 +2,9 @@ package org.gluu.agama.supergluu.authn;
 
 import io.jans.fido2.client.AssertionService;
 import io.jans.fido2.client.Fido2ClientFactory;
-import io.jans.util.NetworkUtils;
 import jakarta.ws.rs.core.Response;
 import net.minidev.json.JSONObject;
+import org.gluu.agama.supergluu.NetworkUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

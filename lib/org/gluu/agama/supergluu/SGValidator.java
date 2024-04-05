@@ -68,14 +68,9 @@ public class SGValidator {
             String deviceDn = sessAttrs.get("super_gluu_u2f_device_dn");
             String deviceId = sessAttrs.get("super_gluu_u2f_device_id");
 
-            logger.debug("*** -> DeviceDN: {}", deviceDn);
-            logger.debug("*** -> DeviceID: {}", deviceId);
-
             if (deviceDn != null && deviceId != null) {
                 Fido2RegistrationEntry device = CdiUtil.bean(RegistrationPersistenceService.class)
                         .findOneStepUserDeviceRegistration(deviceDn);
-
-                logger.debug("*** -> device entity: {}", device);
 
                 if (device == null) {
                     msg = "Device was not found";
@@ -101,7 +96,6 @@ public class SGValidator {
     public String validateDevice(String inum) {
         String msg = null;
         Map<String, String> sessAttrs = getSessionId().getSessionAttributes();
-        logger.debug("*** -> sessAttrs: {}", sessAttrs);
 
         String sessionCustomState = sessAttrs.get("session_custom_state");
         String superGluuU2fDeviceUserInum = sessAttrs.get("super_gluu_u2f_device_user_inum");

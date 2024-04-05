@@ -8,7 +8,7 @@ scimFido2Helper = Call org.gluu.agama.supergluu.ScimFido2Helper#new scimSetting
 fidoDevice = Call scimFido2Helper getFidoDeviceByUser inum
 obj = { fidoDevice: fidoDevice, showError: false, errorTitle: "", errorMessage: "", canEdit: false }
 
-Repeat 50 times max
+Repeat scimSetting.maxLoginAttempt times max
     listForm = RRF "list.ftlh" obj
     Log "@debug List form response %" listForm
 

@@ -15,7 +15,7 @@ public class ScimFidoDeviceResponseDTO implements Serializable {
     @JsonProperty("totalResults")
     private Integer count;
 
-    @JsonProperty("Resources")
+    @JsonProperty("Resources")attachDeviceRegistrationToUser
     private List<ScimFidoDeviceDTO> items = new ArrayList<>();
 
     public ScimFidoDeviceResponseDTO() {

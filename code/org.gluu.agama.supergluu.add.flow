@@ -2,7 +2,7 @@ Flow org.gluu.agama.supergluu.add
      Basepath ""
      Configs conf
      Inputs userData scimSetting
-Log "@debug --> Add a passkey flow started! <--"
+Log "@debug --> Add a supegluu flow started!"
 
 obj = RRF "pre-enrollment.ftlh"
 When obj.cancelBtn is ""
@@ -25,7 +25,7 @@ When dn is null     //Enrollment had issues
     obj = { success: false, error: data.second }
     Finish obj
 
-Log "User % has successfully enrolled a super gluu device. Attaching to profile..." inum
+Log "User % has successfully enrolled a super gluu d    evice. Attaching to profile..." inum
 
 //succ = Call sgEnroller attach inum dn
 //When succ is false

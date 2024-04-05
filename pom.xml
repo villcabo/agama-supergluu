@@ -32,22 +32,12 @@
             <artifactId>casa-config</artifactId>
             <version>${jans.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.jans</groupId>
-            <artifactId>agama-inbound</artifactId>
-            <version>${jans.version}</version>
-        </dependency>
         <!-- Log4j2 -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.20.0</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>net.minidev</groupId>-->
-<!--            <artifactId>json-smart</artifactId>-->
-<!--            <version>2.5.0</version>-->
-<!--        </dependency>-->
     </dependencies>
 
 </project>
